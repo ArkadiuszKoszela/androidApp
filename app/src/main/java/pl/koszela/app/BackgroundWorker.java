@@ -27,10 +27,8 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {
         String type = params[0];
-//        String login_url = "http://192.168.1.24/login.php";
-        String login_url = "https://gofile.io/?c=NjMqST";
-//        String register_url = "http://192.168.1.24/register.php";
-        String register_url = "http://wrzucplik.pl/pokaz/1865493---bag7.html";
+        String login_url = "http://192.168.1.24/login.php";
+        String register_url = "http://192.168.1.24/register.php";
         if(type.equals("login")){
             try {
                 String user_name = params[1];
