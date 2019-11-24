@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-public class Register extends AppCompatActivity {
+public class SaveCustomer extends AppCompatActivity {
 
     EditText name;
     EditText phone;
@@ -14,17 +14,17 @@ public class Register extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_save_customer);
 
-        name = (EditText) findViewById(R.id.et_name);
-        phone = (EditText) findViewById(R.id.et_phone);
+        name = (EditText) findViewById(R.id.et_new_customer_name);
+        phone = (EditText) findViewById(R.id.et_new_customer_phone);
 
     }
 
-    public void OnSave(View view) {
+    public void saveCustomer(View view) {
         String str_name = name.getText().toString();
         String str_phone = phone.getText().toString();
-        String type = "save";
+        String type = "save customer";
 
         BackgroundWorker backgroundWorker = new BackgroundWorker(this);
         backgroundWorker.execute(type, str_name, str_phone);

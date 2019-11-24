@@ -16,8 +16,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        usernameEt = (EditText) findViewById(R.id.et_name);
-        passwordEt = (EditText) findViewById(R.id.et_phone);
+        usernameEt = (EditText) findViewById(R.id.et_username);
+        passwordEt = (EditText) findViewById(R.id.et_password);
 
     }
 
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void OpenNextPage(View view) {
-        startActivity(new Intent(this, Register.class));
+    public void goToRegister(View view) {
+        startActivity(new Intent(this, RegisterUser.class));
     }
 }
