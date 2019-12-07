@@ -20,9 +20,11 @@ import java.net.URLEncoder;
 
 public class BackgroundWorker extends AsyncTask<String, Void, String> {
     Context context;
+    private final MyCallback myCallback;
 
-    public BackgroundWorker(Context ctx) {
+    public BackgroundWorker(Context ctx, MyCallback myCallback) {
         this.context = ctx;
+        this.myCallback = myCallback;
     }
 
     @Override
@@ -48,8 +50,20 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
             try {
                 String name = params[1];
                 String phone = params[2];
+                String selectOption = params[3];
+                int checked1 = Boolean.parseBoolean(params[4]) ? 1 : 0;
+                int checked2 = Boolean.parseBoolean(params[5]) ? 1 : 0;
+                int checked3 = Boolean.parseBoolean(params[6]) ? 1 : 0;
+                int checked4 = Boolean.parseBoolean(params[7]) ? 1 : 0;
+                Integer number = Integer.valueOf(params[8]);
                 String post_data = URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(name, "UTF-8") + "&"
-                        + URLEncoder.encode("phone", "UTF-8") + "=" + URLEncoder.encode(phone, "UTF-8");
+                        + URLEncoder.encode("phone", "UTF-8") + "=" + URLEncoder.encode(phone, "UTF-8") + "&"
+                        + URLEncoder.encode("select_option", "UTF-8") + "=" + URLEncoder.encode(selectOption, "UTF-8") + "&"
+                        + URLEncoder.encode("checked1", "UTF-8") + "=" + checked1 + "&"
+                        + URLEncoder.encode("checked2", "UTF-8") + "=" + checked2 + "&"
+                        + URLEncoder.encode("checked3", "UTF-8") + "=" + checked3 + "&"
+                        + URLEncoder.encode("checked4", "UTF-8") + "=" + checked4 + "&"
+                        + URLEncoder.encode("number", "UTF-8") + "=" + number;
                 return createSQLQuery(save_customer_url, post_data);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -116,7 +130,8 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String result) {
         if (result.contains("login succes")) {
             Toast.makeText(context, result, Toast.LENGTH_LONG).show();
-            context.startActivity(new Intent(context, SaveCustomer.class));
+            myCallback.onResult(result);
+//            context.startActivity(new Intent(context, SaveCustomer.class));
         } else if (result.equals("login failed")) {
             Toast.makeText(context, "Login failed. Please registered", Toast.LENGTH_LONG).show();
         } else if (result.contains("recommend customer")) {
