@@ -1,16 +1,17 @@
 package pl.koszela.app;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -24,11 +25,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 
-
 import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends AppCompatActivity implements
-        View.OnClickListener {
+public class MainActivity extends AppCompatActivity {
+
 
     private static final String TAG = "PhoneAuthActivity";
 
@@ -41,66 +41,45 @@ public class MainActivity extends AppCompatActivity implements
     private static final int STATE_SIGNIN_FAILED = 5;
     private static final int STATE_SIGNIN_SUCCESS = 6;
 
-    // [START declare_auth]
-    private FirebaseAuth mAuth;
-    // [END declare_auth]
-
     private boolean mVerificationInProgress = false;
-    private String mVerificationId;
-    private PhoneAuthProvider.ForceResendingToken mResendToken;
+    EditText usernameEt;
+    EditText passwordEt;
+    private EditText mVerificationField;
+    private Button mVerifyButton;
+    private Button mResendButton;
+    private Button loginButton;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
-
-    private ViewGroup mPhoneNumberViews;
-    private ViewGroup mSignedInViews;
 
     private TextView mStatusText;
     private TextView mDetailText;
 
-    private EditText mPhoneNumberField;
-    private EditText mVerificationField;
+    private String resultPhone;
 
-    private Button mStartButton;
-    private Button mVerifyButton;
-    private Button mResendButton;
-    private Button mSignOutButton;
+    private String mVerificationId;
+    private PhoneAuthProvider.ForceResendingToken mResendToken;
+
+    private FirebaseAuth mAuth;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // Restore instance state
-        if (savedInstanceState != null) {
-            onRestoreInstanceState(savedInstanceState);
-        }
-
-        // Assign views
-        mPhoneNumberViews = findViewById(R.id.phoneAuthFields);
-        mSignedInViews = findViewById(R.id.signedInButtons);
-
-        mStatusText = findViewById(R.id.status);
-        mDetailText = findViewById(R.id.detail);
-
-        mPhoneNumberField = findViewById(R.id.fieldPhoneNumber);
+        usernameEt = (EditText) findViewById(R.id.et_username);
+        passwordEt = (EditText) findViewById(R.id.et_password);
         mVerificationField = findViewById(R.id.fieldVerificationCode);
 
-        mStartButton = findViewById(R.id.buttonStartVerification);
-        mVerifyButton = findViewById(R.id.buttonVerifyPhone);
-        mResendButton = findViewById(R.id.buttonResend);
-        mSignOutButton = findViewById(R.id.signOutButton);
+        mStatusText = findViewById(R.id.statuss);
+        mDetailText = findViewById(R.id.details);
 
-        // Assign click listeners
-        mStartButton.setOnClickListener(this);
-        mVerifyButton.setOnClickListener(this);
-        mResendButton.setOnClickListener(this);
-        mSignOutButton.setOnClickListener(this);
+        mVerifyButton = (Button) findViewById(R.id.verify);
+        mResendButton = (Button) findViewById(R.id.resendBttn);
+        loginButton = (Button) findViewById(R.id.btnSave);
 
-        // [START initialize_auth]
-        // Initialize Firebase Auth
+
         mAuth = FirebaseAuth.getInstance();
-        // [END initialize_auth]
 
-        // Initialize phone auth callbacks
+// Initialize phone auth callbacks
         // [START phone_auth_callbacks]
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
@@ -136,7 +115,8 @@ public class MainActivity extends AppCompatActivity implements
                 if (e instanceof FirebaseAuthInvalidCredentialsException) {
                     // Invalid request
                     // [START_EXCLUDE]
-                    mPhoneNumberField.setError("Invalid phone number.");
+                    System.out.println("Invalid phone number.");
+//                    mPhoneNumberField.setError("Invalid phone number.");
                     // [END_EXCLUDE]
                 } else if (e instanceof FirebaseTooManyRequestsException) {
                     // The SMS quota for the project has been exceeded
@@ -183,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements
 
         // [START_EXCLUDE]
         if (mVerificationInProgress && validatePhoneNumber()) {
-            startPhoneNumberVerification(mPhoneNumberField.getText().toString());
+            startPhoneNumberVerification(resultPhone);
         }
         // [END_EXCLUDE]
     }
@@ -297,26 +277,26 @@ public class MainActivity extends AppCompatActivity implements
         switch (uiState) {
             case STATE_INITIALIZED:
                 // Initialized state, show only the phone number field and start button
-                enableViews(mStartButton, mPhoneNumberField);
+                enableViews(loginButton);
                 disableViews(mVerifyButton, mResendButton, mVerificationField);
                 mDetailText.setText(null);
                 break;
             case STATE_CODE_SENT:
                 // Code sent state, show the verification field, the
-                enableViews(mVerifyButton, mResendButton, mPhoneNumberField, mVerificationField);
-                disableViews(mStartButton);
+                enableViews(mVerifyButton, mResendButton, mVerificationField);
+                disableViews(loginButton);
                 mDetailText.setText(R.string.status_code_sent);
                 break;
             case STATE_VERIFY_FAILED:
                 // Verification has failed, show all options
-                enableViews(mStartButton, mVerifyButton, mResendButton, mPhoneNumberField,
+                enableViews(loginButton, mVerifyButton, mResendButton,
                         mVerificationField);
-                mDetailText.setText(R.string.status_verification_failed);
+//                mDetailText.setText(R.string.status_verification_failed);
                 break;
             case STATE_VERIFY_SUCCESS:
                 // Verification has succeeded, proceed to firebase sign in
-                disableViews(mStartButton, mVerifyButton, mResendButton, mPhoneNumberField,
-                        mVerificationField);
+//                disableViews(mStartButton, mVerifyButton, mResendButton, mPhoneNumberField,
+//                        mVerificationField);
                 mDetailText.setText(R.string.status_verification_succeeded);
 
                 // Set the verification text based on the credential
@@ -324,14 +304,14 @@ public class MainActivity extends AppCompatActivity implements
                     if (cred.getSmsCode() != null) {
                         mVerificationField.setText(cred.getSmsCode());
                     } else {
-                        mVerificationField.setText(R.string.instant_validation);
+                        mVerificationField.setText("brak kodu weryfikacyjnego");
                     }
                 }
 
                 break;
             case STATE_SIGNIN_FAILED:
                 // No-op, handled by sign-in check
-                mDetailText.setText(R.string.status_sign_in_failed);
+//                mDetailText.setText(R.string.status_sign_in_failed);
                 break;
             case STATE_SIGNIN_SUCCESS:
                 // Np-op, handled by sign-in check
@@ -340,28 +320,31 @@ public class MainActivity extends AppCompatActivity implements
 
         if (user == null) {
             // Signed out
-            mPhoneNumberViews.setVisibility(View.VISIBLE);
-            mSignedInViews.setVisibility(View.GONE);
-
+//            mPhoneNumberViews.setVisibility(View.VISIBLE);
+//            mSignedInViews.setVisibility(View.GONE);
+//
             mStatusText.setText(R.string.signed_out);
         } else {
+            Intent intent = new Intent(MainActivity.this, Points.class);
+            intent.putExtra("message_key", resultt);
+            startActivity(intent);
             // Signed in
-            mPhoneNumberViews.setVisibility(View.GONE);
-            mSignedInViews.setVisibility(View.VISIBLE);
-
-            enableViews(mPhoneNumberField, mVerificationField);
-            mPhoneNumberField.setText(null);
+//            mPhoneNumberViews.setVisibility(View.GONE);
+//            mSignedInViews.setVisibility(View.VISIBLE);
+//
+            enableViews(mVerificationField);
+//            mPhoneNumberField.setText(null);
             mVerificationField.setText(null);
-
+//
             mStatusText.setText(R.string.signed_in);
             mDetailText.setText(getString(R.string.firebase_status_fmt, user.getUid()));
         }
     }
 
     private boolean validatePhoneNumber() {
-        String phoneNumber = mPhoneNumberField.getText().toString();
+        String phoneNumber = resultPhone;
         if (TextUtils.isEmpty(phoneNumber)) {
-            mPhoneNumberField.setError("Invalid phone number.");
+            Toast.makeText(this, "Invalid phone number.", Toast.LENGTH_LONG);
             return false;
         }
 
@@ -380,31 +363,45 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.buttonStartVerification:
-                if (!validatePhoneNumber()) {
-                    return;
-                }
+    String resultt = "";
 
-                startPhoneNumberVerification(mPhoneNumberField.getText().toString());
-                break;
-            case R.id.buttonVerifyPhone:
-                String code = mVerificationField.getText().toString();
-                if (TextUtils.isEmpty(code)) {
-                    mVerificationField.setError("Cannot be empty.");
-                    return;
-                }
 
-                verifyPhoneNumberWithCode(mVerificationId, code);
-                break;
-            case R.id.buttonResend:
-                resendVerificationCode(mPhoneNumberField.getText().toString(), mResendToken);
-                break;
-            case R.id.signOutButton:
-                signOut();
-                break;
+    public void OnLogin(View view) {
+        String username = usernameEt.getText().toString();
+        String password = passwordEt.getText().toString();
+        String type = "login";
+
+        BackgroundWorker backgroundWorker = new BackgroundWorker(this, new MyCallback() {
+            @Override
+            public void onResult(String result) {
+
+                int i = result.lastIndexOf("=");
+                resultt = result;
+                resultPhone = resultt.substring(i);
+                startPhoneNumberVerification(resultPhone);
+
+            }
+        });
+        backgroundWorker.execute(type, username, password);
+
+    }
+
+
+    public void goToRegister(View view) {
+        startActivity(new Intent(this, RegisterUser.class));
+    }
+
+    public void Verify(View view) {
+        String code = mVerificationField.getText().toString();
+        if (TextUtils.isEmpty(code)) {
+            mVerificationField.setError("Cannot be empty.");
+            Toast.makeText(this, "Pole weryfikacyjne nie może być puste", Toast.LENGTH_LONG).show();
+            return;
         }
+        verifyPhoneNumberWithCode(mVerificationId, code);
+    }
+
+    public void Resend(View view) {
+        resendVerificationCode(resultPhone, mResendToken);
     }
 }

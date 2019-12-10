@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Firebase Authentication</string>
+    <string name="app_name">Nowoczesne budowanie</string>
 
     <string name="label_google_sign_in">Firebase + Google Sign In</string>
     <string name="desc_google_sign_in">Use a Google Sign In credential to authenticate with Firebase.</string>
@@ -30,16 +30,16 @@
 
     <string name="hint_user_id">User ID</string>
     <string name="get_custom_token">Get Token</string>
-    <string name="sign_in">Sign In</string>
+    <string name="sign_in">Zalogowany</string>
     <string name="create_account">Create Account</string>
     <string name="send_link">Send Link</string>
-    <string name="sign_out">Sign Out</string>
+    <string name="sign_out">Wylogowany</string>
     <string name="verify_email">Verify Email</string>
     <string name="disconnect">Disconnect</string>
     <string name="loading">Loading…</string>
     <string name="custom_token">Custom Token</string>
-    <string name="signed_in">Signed In</string>
-    <string name="signed_out">Signed Out</string>
+    <string name="signed_in">Zalogowano</string>
+    <string name="signed_out">Wylogowano</string>
     <string name="token_null">Token: null</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
