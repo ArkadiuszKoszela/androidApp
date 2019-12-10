@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1096523573087",
+    "firebase_url": "https://nowoczesnebudowanie-dfa42.firebaseio.com",
+    "project_id": "nowoczesnebudowanie-dfa42",
+    "storage_bucket": "nowoczesnebudowanie-dfa42.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1096523573087:android:e0596283880e194775b8ea",
+        "android_client_info": {
+          "package_name": "pl.koszela.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1096523573087-5ridksuvn2rf8krg31ps5spel8fb82v7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pl.koszela.app",
+            "certificate_hash": "bc9125bf74a8904b2a27abf694a40d22e0b1d76f"
+          }
+        },
+        {
+          "client_id": "1096523573087-b6pjk7e4scphvlue4srs2p2mj2e1inc5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOq4I0C0OaleSK_evoVsaz7lEqFdbM2lE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1096523573087-b6pjk7e4scphvlue4srs2p2mj2e1inc5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
