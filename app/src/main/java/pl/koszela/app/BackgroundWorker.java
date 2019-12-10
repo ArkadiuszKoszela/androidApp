@@ -20,10 +20,23 @@ import java.net.URLEncoder;
 
 public class BackgroundWorker extends AsyncTask<String, Void, String> {
     Context context;
+    private MyCallback myCallback;
+//    private MyCallback2 myCallback2;
+
+    public BackgroundWorker(Context ctx, MyCallback myCallback) {
+        this.context = ctx;
+        this.myCallback = myCallback;
+    }
+
+//    public BackgroundWorker(Context ctx, MyCallback2 myCallback2) {
+//        this.context = ctx;
+//        this.myCallback2 = myCallback2;
+//    }
 
     public BackgroundWorker(Context ctx) {
         this.context = ctx;
     }
+
 
     @Override
     protected String doInBackground(String... params) {
@@ -48,8 +61,22 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
             try {
                 String name = params[1];
                 String phone = params[2];
+                String selectOption = params[3];
+                int checked1 = Boolean.parseBoolean(params[4]) ? 1 : 0;
+                int checked2 = Boolean.parseBoolean(params[5]) ? 1 : 0;
+                int checked3 = Boolean.parseBoolean(params[6]) ? 1 : 0;
+                int checked4 = Boolean.parseBoolean(params[7]) ? 1 : 0;
+                Integer number = Integer.valueOf(params[8]);
+                String id = params[9];
                 String post_data = URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(name, "UTF-8") + "&"
-                        + URLEncoder.encode("phone", "UTF-8") + "=" + URLEncoder.encode(phone, "UTF-8");
+                        + URLEncoder.encode("phone", "UTF-8") + "=" + URLEncoder.encode(phone, "UTF-8") + "&"
+                        + URLEncoder.encode("select_option", "UTF-8") + "=" + URLEncoder.encode(selectOption, "UTF-8") + "&"
+                        + URLEncoder.encode("checked1", "UTF-8") + "=" + checked1 + "&"
+                        + URLEncoder.encode("checked2", "UTF-8") + "=" + checked2 + "&"
+                        + URLEncoder.encode("checked3", "UTF-8") + "=" + checked3 + "&"
+                        + URLEncoder.encode("checked4", "UTF-8") + "=" + checked4 + "&"
+                        + URLEncoder.encode("number", "UTF-8") + "=" + number + "&"
+                        + URLEncoder.encode("user_mobile_app_id", "UTF-8") + "=" + id;
                 return createSQLQuery(save_customer_url, post_data);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -115,14 +142,18 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         if (result.contains("login succes")) {
+            int i = result.lastIndexOf("!");
+            int p = result.lastIndexOf("P");
+            String substring = result.substring(i, p);
             Toast.makeText(context, result, Toast.LENGTH_LONG).show();
-            context.startActivity(new Intent(context, SaveCustomer.class));
+            myCallback.onResult(result);
         } else if (result.equals("login failed")) {
             Toast.makeText(context, "Login failed. Please registered", Toast.LENGTH_LONG).show();
         } else if (result.contains("recommend customer")) {
             Toast.makeText(context, result, Toast.LENGTH_LONG).show();
         } else if (result.contains("register user")) {
             Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+            context.startActivity(new Intent(context, MainActivity.class));
         }
     }
 
