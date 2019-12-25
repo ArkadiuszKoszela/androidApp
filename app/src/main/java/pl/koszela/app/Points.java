@@ -33,7 +33,8 @@ public class Points extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         result = getIntent().getStringExtra("message_key");
-        if (result != null) {
+        if (result != null && !result.equals("")) {
+
             int login = result.indexOf("points");
             str_id = result.substring(0, login);
             String textID = str_id;
@@ -42,6 +43,14 @@ public class Points extends AppCompatActivity {
             int login1 = result.indexOf('s');
             int login2 = result.indexOf("login");
             str_points = result.substring(login1 + 1, login2);
+            int brakuje = 1000 - Integer.parseInt(str_points);
+            String pointsText = "Aktualnie zdobyłes : " + str_points + " Brakuję Ci " + brakuje;
+            mPoints.setText(pointsText);
+        } else if (getIntent().getStringExtra("id") != null && getIntent().getStringExtra("str_points") != null) {
+            str_id = getIntent().getStringExtra("id");
+            String textID = str_id;
+            idUSer.setText(textID);
+            str_points = getIntent().getStringExtra("str_points");
             int brakuje = 1000 - Integer.parseInt(str_points);
             String pointsText = "Aktualnie zdobyłes : " + str_points + " Brakuję Ci " + brakuje;
             mPoints.setText(pointsText);
@@ -67,6 +76,15 @@ public class Points extends AppCompatActivity {
                 getIntent().removeExtra("message_key");
                 Intent intent = new Intent(Points.this, SaveCustomer.class);
                 intent.putExtra("message_key", result);
+                if (getIntent().getStringExtra("id") != null && getIntent().getStringExtra("str_points") != null) {
+                    str_points = getIntent().getStringExtra("str_points");
+                    str_id = getIntent().getStringExtra("id");
+                    intent.putExtra("str_points", str_points);
+                    intent.putExtra("id", str_id);
+                } else {
+                    intent.putExtra("id", str_id);
+                    intent.putExtra("str_points", str_points);
+                }
                 startActivity(intent);
                 return true;
 

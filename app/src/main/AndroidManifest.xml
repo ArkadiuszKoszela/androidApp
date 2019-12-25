@@ -3,19 +3,24 @@
     package="pl.koszela.app">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
+        android:configChanges="orientation|screenSize"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Points"></activity>
+        <activity android:name=".MainActivity"></activity>
         <activity android:name=".SaveCustomer" />
+        <activity android:name=".Points" />
+        <activity android:name=".TakePhoto" />
         <activity android:name=".RegisterUser" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".Menu">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

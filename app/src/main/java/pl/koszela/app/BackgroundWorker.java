@@ -3,11 +3,14 @@ package pl.koszela.app;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.util.Base64;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,17 +24,13 @@ import java.net.URLEncoder;
 public class BackgroundWorker extends AsyncTask<String, Void, String> {
     Context context;
     private MyCallback myCallback;
-//    private MyCallback2 myCallback2;
+    String id;
+    private String str_points;
 
     public BackgroundWorker(Context ctx, MyCallback myCallback) {
         this.context = ctx;
         this.myCallback = myCallback;
     }
-
-//    public BackgroundWorker(Context ctx, MyCallback2 myCallback2) {
-//        this.context = ctx;
-//        this.myCallback2 = myCallback2;
-//    }
 
     public BackgroundWorker(Context ctx) {
         this.context = ctx;
@@ -44,6 +43,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
         String login_url = "http://begginerwebsite.000webhostapp.com/login.php";
         String save_customer_url = "http://begginerwebsite.000webhostapp.com/add_recommend_customer.php";
         String register_user_url = "http://begginerwebsite.000webhostapp.com/register_user.php";
+        String ImageUploadPathOnSever = "https://begginerwebsite.000webhostapp.com/capture_img_upload_to_server.php";
         if (type.equals("login")) {
             try {
                 String user_name = params[1];
@@ -67,7 +67,9 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                 int checked3 = Boolean.parseBoolean(params[6]) ? 1 : 0;
                 int checked4 = Boolean.parseBoolean(params[7]) ? 1 : 0;
                 Integer number = Integer.valueOf(params[8]);
-                String id = params[9];
+                id = params[9];
+                String url_image = params[10];
+                str_points = params[11];
                 String post_data = URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(name, "UTF-8") + "&"
                         + URLEncoder.encode("phone", "UTF-8") + "=" + URLEncoder.encode(phone, "UTF-8") + "&"
                         + URLEncoder.encode("select_option", "UTF-8") + "=" + URLEncoder.encode(selectOption, "UTF-8") + "&"
@@ -76,7 +78,8 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                         + URLEncoder.encode("checked3", "UTF-8") + "=" + checked3 + "&"
                         + URLEncoder.encode("checked4", "UTF-8") + "=" + checked4 + "&"
                         + URLEncoder.encode("number", "UTF-8") + "=" + number + "&"
-                        + URLEncoder.encode("user_mobile_app_id", "UTF-8") + "=" + id;
+                        + URLEncoder.encode("user_mobile_app_id", "UTF-8") + "=" + id + "&"
+                        + URLEncoder.encode("url_image", "UTF-8") + "=" + URLEncoder.encode(url_image, "UTF-8");
                 return createSQLQuery(save_customer_url, post_data);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -100,6 +103,19 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                 return createSQLQuery(register_user_url, post_data);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if(type.equals("save image")){
+
+            String name = params[1];
+            String encodedImage = params[2];
+
+            try {
+                String post_data = URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(name, "UTF-8") + "&"
+                        + URLEncoder.encode("image", "UTF-8") + "=" + URLEncoder.encode(encodedImage, "UTF-8");
+
+                return createSQLQuery(ImageUploadPathOnSever, post_data);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -151,9 +167,17 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
             Toast.makeText(context, "Login failed. Please registered", Toast.LENGTH_LONG).show();
         } else if (result.contains("recommend customer")) {
             Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(context, TakePhoto.class);
+            intent.putExtra("id", id);
+            intent.putExtra("str_points", str_points);
+            context.startActivity(intent);
         } else if (result.contains("register user")) {
             Toast.makeText(context, result, Toast.LENGTH_LONG).show();
             context.startActivity(new Intent(context, MainActivity.class));
+        }else if (result.contains("begginerwebsite")) {
+            Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+            myCallback.onResult(result);
+
         }
     }
 
