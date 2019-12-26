@@ -1,6 +1,5 @@
 package pl.koszela.app;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,9 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -37,11 +33,12 @@ public class SaveCustomer extends AppCompatActivity {
     CheckBox checkBox3;
     CheckBox checkBox4;
     Spinner dropdown;
-    EditText number;
+    EditText place;
     //    private TextView mPoints;
     private TextView text1;
     private TextView text2;
     private TextView id;
+    EditText editTextNote;
 
 
     private TextView mDetailID;
@@ -57,6 +54,7 @@ public class SaveCustomer extends AppCompatActivity {
     ImageView imageToUpload;
     private Button btnGoToTakePhoto;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,25 +62,21 @@ public class SaveCustomer extends AppCompatActivity {
 
         name = (EditText) findViewById(R.id.et_new_customer_name);
         phone = (EditText) findViewById(R.id.et_new_customer_phone);
-        number = (EditText) findViewById(R.id.editNumber);
-        mSignOutButton = (Button) findViewById(R.id.logout);
-        checkBox1 = (CheckBox) findViewById(R.id.checkbox_1);
-        checkBox2 = (CheckBox) findViewById(R.id.checkbox_2);
-        checkBox3 = (CheckBox) findViewById(R.id.checkbox_3);
-        checkBox4 = (CheckBox) findViewById(R.id.checkbox_4);
+        place = (EditText) findViewById(R.id.editText2);
+        editTextNote = (EditText) findViewById(R.id.etNote);
         mDetailID = findViewById(R.id.userId);
-        text1 = findViewById(R.id.textView7);
+//        text1 = findViewById(R.id.textView7);
         text2 = findViewById(R.id.textView5);
         save = (Button) findViewById(R.id.btnSaveCustomer);
         imageToUpload = (ImageView) findViewById(R.id.imageToUpload);
         btnGoToTakePhoto = (Button) findViewById(R.id.btnGoToTakePhoto);
 
         mAuth = FirebaseAuth.getInstance();
-        if (getIntent().getStringExtra("str_points") != null) {
+        if (getIntent().getStringExtra("str_points") != null && getIntent().getStringExtra("id") != null) {
             str_points = getIntent().getStringExtra("str_points");
+            str_id = getIntent().getStringExtra("id");
         }
         result = getIntent().getStringExtra("message_key");
-        str_id = getIntent().getStringExtra("id");
         if (result != null && !result.equals("")) {
             int login = result.indexOf("points");
             str_id = result.substring(0, login);
@@ -102,39 +96,39 @@ public class SaveCustomer extends AppCompatActivity {
 
     String res = "";
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.menu, menu);
+//        return true;
+//    }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.item1:
-                getIntent().removeExtra("message_key");
-                Intent intent = new Intent(SaveCustomer.this, Points.class);
-                if (getIntent().getStringExtra("str_points") != null && getIntent().getStringExtra("id") != null) {
-                    str_points = getIntent().getStringExtra("str_points");
-                    str_id = getIntent().getStringExtra("id");
-                    intent.putExtra("id", str_id);
-                    intent.putExtra("str_points", str_points);
-                }else {
-                    intent.putExtra("id", str_id);
-                    intent.putExtra("str_points", str_points);
-                }
-                intent.putExtra("message_key", result);
-                startActivity(intent);
-                return true;
-            case R.id.item2:
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.item1:
+//                getIntent().removeExtra("message_key");
+//                Intent intent = new Intent(SaveCustomer.this, Points.class);
+//                if (getIntent().getStringExtra("str_points") != null && getIntent().getStringExtra("id") != null) {
+//                    str_points = getIntent().getStringExtra("str_points");
+//                    str_id = getIntent().getStringExtra("id");
+//                    intent.putExtra("id", str_id);
+//                    intent.putExtra("str_points", str_points);
+//                }else {
+//                    intent.putExtra("id", str_id);
+//                    intent.putExtra("str_points", str_points);
+//                }
+//                intent.putExtra("message_key", result);
+//                startActivity(intent);
+//                return true;
+//            case R.id.item2:
+//                return true;
+//
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//
+//    }
 
     String urlImage = "";
 
@@ -143,11 +137,8 @@ public class SaveCustomer extends AppCompatActivity {
         String str_phone = phone.getText().toString();
         String type = "save customer";
         String selectItemFromComboBox = dropdown.getSelectedItem().toString();
-        String checked1 = Boolean.toString(checkBox1.isChecked());
-        String checked2 = Boolean.toString(checkBox2.isChecked());
-        String checked3 = Boolean.toString(checkBox3.isChecked());
-        String checked4 = Boolean.toString(checkBox4.isChecked());
-        String str_number = number.getText().toString();
+        String place_build = place.getText().toString();
+        String note = editTextNote.getText().toString();
 
         image = ((BitmapDrawable) imageToUpload.getDrawable()).getBitmap();
 
@@ -155,24 +146,13 @@ public class SaveCustomer extends AppCompatActivity {
         image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
         String encodedImage = Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT);
 
-
-        BackgroundWorker backgroundWorker1 = new BackgroundWorker(SaveCustomer.this, new MyCallback() {
-            @Override
-            public void onResult(String result) {
-
-                urlImage = result;
-            }
-        });
-
-        backgroundWorker1.execute("save image", name.getText().toString(), encodedImage);
-
         BackgroundWorker backgroundWorker = new BackgroundWorker(this, new MyCallback() {
             @Override
             public void onResult(String result) {
                 res = result;
             }
         });
-        backgroundWorker.execute(type, str_name, str_phone, selectItemFromComboBox, checked1, checked2, checked3, checked4, str_number, str_id, urlImage, str_points);
+        backgroundWorker.execute(type, str_name, str_phone, selectItemFromComboBox, place_build, str_id, urlImage, str_points, note, name.getText().toString(), encodedImage);
     }
 
     Bitmap image;

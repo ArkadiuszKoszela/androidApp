@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#66ff33"
+    android:background="#8FBF2D"
     tools:context=".Menu">
 
     <Button
         android:id="@+id/button"
         android:layout_width="0dp"
         android:layout_height="240dp"
-        android:layout_marginBottom="352dp"
+        android:layout_marginBottom="344dp"
+        android:onClick="GoToSaveCustomer"
         android:text="Zgłoszenie budowy"
         android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -22,7 +23,8 @@
         android:id="@+id/button2"
         android:layout_width="0dp"
         android:layout_height="240dp"
-        android:layout_marginBottom="352dp"
+        android:layout_marginBottom="344dp"
+        android:onClick="GotoPoints"
         android:text="Stan konta"
         android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -87,5 +89,17 @@
         app:layout_constraintStart_toStartOf="parent"
         android:onClick="GotoUrl"
         android:src="@mipmap/ic_launcher_foreground" />
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="204dp"
+        android:layout_height="43dp"
+        android:layout_marginBottom="584dp"
+        android:text="Wyloguj"
+        android:onClick="OnLogout1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

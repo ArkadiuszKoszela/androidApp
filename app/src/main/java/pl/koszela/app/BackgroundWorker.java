@@ -62,23 +62,21 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                 String name = params[1];
                 String phone = params[2];
                 String selectOption = params[3];
-                int checked1 = Boolean.parseBoolean(params[4]) ? 1 : 0;
-                int checked2 = Boolean.parseBoolean(params[5]) ? 1 : 0;
-                int checked3 = Boolean.parseBoolean(params[6]) ? 1 : 0;
-                int checked4 = Boolean.parseBoolean(params[7]) ? 1 : 0;
-                Integer number = Integer.valueOf(params[8]);
-                id = params[9];
-                String url_image = params[10];
-                str_points = params[11];
+                String place = params[4];
+                id = params[5];
+                String url_image = params[6];
+                str_points = params[7];
+                String note = params[8];
+                String nameImage = params[9];
+                String encodedImage = params[10];
                 String post_data = URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(name, "UTF-8") + "&"
                         + URLEncoder.encode("phone", "UTF-8") + "=" + URLEncoder.encode(phone, "UTF-8") + "&"
                         + URLEncoder.encode("select_option", "UTF-8") + "=" + URLEncoder.encode(selectOption, "UTF-8") + "&"
-                        + URLEncoder.encode("checked1", "UTF-8") + "=" + checked1 + "&"
-                        + URLEncoder.encode("checked2", "UTF-8") + "=" + checked2 + "&"
-                        + URLEncoder.encode("checked3", "UTF-8") + "=" + checked3 + "&"
-                        + URLEncoder.encode("checked4", "UTF-8") + "=" + checked4 + "&"
-                        + URLEncoder.encode("number", "UTF-8") + "=" + number + "&"
+                        + URLEncoder.encode("place", "UTF-8") + "=" + URLEncoder.encode(place, "UTF-8") + "&"
                         + URLEncoder.encode("user_mobile_app_id", "UTF-8") + "=" + id + "&"
+                        + URLEncoder.encode("note", "UTF-8") + "=" + URLEncoder.encode(note, "UTF-8")  + "&"
+                        + URLEncoder.encode("name_image", "UTF-8") + "=" + URLEncoder.encode(nameImage, "UTF-8")  + "&"
+                        + URLEncoder.encode("image", "UTF-8") + "=" + URLEncoder.encode(encodedImage, "UTF-8")  + "&"
                         + URLEncoder.encode("url_image", "UTF-8") + "=" + URLEncoder.encode(url_image, "UTF-8");
                 return createSQLQuery(save_customer_url, post_data);
             } catch (MalformedURLException e) {
@@ -101,21 +99,6 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                         + URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(username, "UTF-8") + "&"
                         + URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8");
                 return createSQLQuery(register_user_url, post_data);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else if(type.equals("save image")){
-
-            String name = params[1];
-            String encodedImage = params[2];
-
-            try {
-                String post_data = URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(name, "UTF-8") + "&"
-                        + URLEncoder.encode("image", "UTF-8") + "=" + URLEncoder.encode(encodedImage, "UTF-8");
-
-                return createSQLQuery(ImageUploadPathOnSever, post_data);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -167,7 +150,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
             Toast.makeText(context, "Login failed. Please registered", Toast.LENGTH_LONG).show();
         } else if (result.contains("recommend customer")) {
             Toast.makeText(context, result, Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(context, TakePhoto.class);
+            Intent intent = new Intent(context, Menu.class);
             intent.putExtra("id", id);
             intent.putExtra("str_points", str_points);
             context.startActivity(intent);

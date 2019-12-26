@@ -325,9 +325,14 @@ public class MainActivity extends AppCompatActivity {
 //
             mStatusText.setText(R.string.signed_out);
         } else {
-            Intent intent = new Intent(MainActivity.this, Points.class);
+            Intent intent = new Intent(MainActivity.this, Menu.class);
             intent.putExtra("message_key", resultt);
-            startActivity(intent);
+            if(resultt.equals("")){
+                user.delete();
+                startActivity(new Intent(MainActivity.this, MainActivity.class));
+            }else {
+                startActivity(intent);
+            }
             // Signed in
 //            mPhoneNumberViews.setVisibility(View.GONE);
 //            mSignedInViews.setVisibility(View.VISIBLE);
